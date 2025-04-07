@@ -7,6 +7,7 @@
   <title>TreceHome - Parte de Visita</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-192.png" type="image/png" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,8 +37,8 @@
     }
     canvas {
       border: 1px solid #ccc;
-      margin-bottom: 20px;
-      touch-action: none; /* clave para iOS */
+      margin-bottom: 10px;
+      touch-action: none;
     }
     .firma-label {
       color: #001f4d;
@@ -56,7 +57,7 @@
       border: none;
       cursor: pointer;
       font-size: 16px;
-      width: 100%;
+      margin-bottom: 15px;
     }
   </style>
 </head>
@@ -92,9 +93,11 @@
 
     <div class="firma-label">Firma del cliente:</div>
     <canvas id="firma-cliente" width="300" height="100"></canvas>
+    <button type="button" onclick="borrarFirma('firma-cliente')">Borrar Firma Cliente</button>
 
     <div class="firma-label">Firma del agente:</div>
     <canvas id="firma-agente" width="300" height="100"></canvas>
+    <button type="button" onclick="borrarFirma('firma-agente')">Borrar Firma Agente</button>
 
     <p class="disclaimer">
       Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.
@@ -158,8 +161,74 @@
       canvas.addEventListener("mouseout", () => drawing = false);
     }
 
+    function borrarFirma(id) {
+      const canvas = document.getElementById(id);
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
     enableTouchSignature("firma-cliente");
     enableTouchSignature("firma-agente");
+  </script>
+
+  <script>
+    document.getElementById("visita-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const cliente = form.cliente.value;
+      const dni = form.dni.value;
+      const email = form.email.value;
+      const telefono = form.telefono.value;
+      const direccion = form.direccion.value;
+      const fecha = form.fecha.value;
+      const agente = form.agente.value;
+
+      const firmaCliente = document.getElementById("firma-cliente").toDataURL("image/png");
+      const firmaAgente = document.getElementById("firma-agente").toDataURL("image/png");
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ format: 'a5', unit: 'mm' });
+
+      doc.setFontSize(12);
+      doc.text(`Nombre: ${cliente}`, 10, 20);
+      doc.text(`DNI: ${dni}`, 10, 30);
+      doc.text(`Email: ${email}`, 10, 40);
+      doc.text(`Teléfono: ${telefono}`, 10, 50);
+      doc.text(`Dirección: ${direccion}`, 10, 60);
+      doc.text(`Fecha: ${fecha}`, 10, 70);
+      doc.text(`Agente: ${agente}`, 10, 80);
+      doc.text("Firmas:", 10, 90);
+      doc.addImage(firmaCliente, "PNG", 10, 95, 50, 15);
+      doc.addImage(firmaAgente, "PNG", 70, 95, 50, 15);
+      doc.setFontSize(7);
+      doc.text("Mediante la firma de esta hoja de visita...", 10, 120);
+      doc.text("Asimismo, reconoce y acepta que TRECE HOME...", 10, 130);
+
+      const pdfBlob = doc.output("blob");
+      const reader = new FileReader();
+      reader.readAsDataURL(pdfBlob);
+      reader.onloadend = async function () {
+        const base64 = reader.result.split(",")[1];
+        const body = {
+          pdf: base64,
+          filename: `Parte_Visita_${cliente}_${fecha}.pdf`
+        };
+
+        try {
+          const res = await fetch("https://script.google.com/macros/s/AKfycbziA2VFfKWQ8HXktqdWAXChhyAHO-v--_jFO54sUVeMQWTzrZzrwx_NlvgKTzy-FVz8GQ/exec", {
+            method: "POST",
+            body: JSON.stringify(body),
+            headers: { "Content-Type": "application/json" }
+          });
+
+          const url = await res.text();
+          alert("PDF subido correctamente:\n" + url);
+        } catch (err) {
+          alert("Error al subir el PDF: " + err.message);
+        }
+      };
+    });
   </script>
 
   <script>
