@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#633f1e" />
+  <title>TreceHome - Parte de Visita</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #633f1e;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    .firma-label {
+      color: #001f4d;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .disclaimer {
+      font-size: 0.85em;
+      font-style: italic;
+      margin-top: 20px;
+    }
+    button {
+      background-color: #633f1e;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Parte de Visita</h1>
+  <form id="visita-form">
+    <label>Nombre del cliente</label>
+    <input type="text" name="cliente" required />
+
+    <label>DNI</label>
+    <input type="text" name="dni" required />
+
+    <label>Teléfono</label>
+    <input type="tel" name="telefono" required />
+
+    <label>Email</label>
+    <input type="email" name="email" required />
+
+    <label>Dirección del inmueble visitado</label>
+    <input type="text" name="direccion" required />
+
+    <label>Fecha</label>
+    <input type="date" name="fecha" required />
+
+    <label>Agente Inmobiliario</label>
+    <select name="agente">
+      <option>Kristina K</option>
+      <option>Sergio A</option>
+      <option>Diego A</option>
+      <option>Sergio JR</option>
+    </select>
+
+    <div class="firma-label">Firma del cliente:</div>
+    <canvas id="firma-cliente" width="300" height="100"></canvas>
+
+    <div class="firma-label">Firma del agente:</div>
+    <canvas id="firma-agente" width="300" height="100"></canvas>
+
+    <p class="disclaimer">
+      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.
+    </p>
+    <p class="disclaimer">
+      Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.
+    </p>
+
+    <button type="submit">Generar PDF y subir a Drive</button>
+  </form>
+
+  <script>
+    const canvasCliente = document.getElementById("firma-cliente");
+    const canvasAgente = document.getElementById("firma-agente");
+
+    function enableSignature(canvas) {
+      let painting = false;
+      const ctx = canvas.getContext("2d");
+      ctx.strokeStyle = "#001f4d";
+      ctx.lineWidth = 2;
+
+      const startPosition = (e) => {
+        painting = true;
+        draw(e);
+      };
+      const endPosition = () => {
+        painting = false;
+        ctx.beginPath();
+      };
+      const draw = (e) => {
+        if (!painting) return;
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+      };
+
+      canvas.addEventListener("mousedown", startPosition);
+      canvas.addEventListener("mouseup", endPosition);
+      canvas.addEventListener("mousemove", draw);
+    }
+
+    enableSignature(canvasCliente);
+    enableSignature(canvasAgente);
+  </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker registrado"))
+          .catch((err) => console.error("Error SW:", err));
+      });
+    }
+  </script>
+</body>
+</html>
