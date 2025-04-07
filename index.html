@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#633f1e" />
   <title>TreceHome - Parte de Visita</title>
   <link rel="manifest" href="manifest.json" />
@@ -37,6 +37,7 @@
     canvas {
       border: 1px solid #ccc;
       margin-bottom: 20px;
+      touch-action: none; /* clave para iOS */
     }
     .firma-label {
       color: #001f4d;
@@ -123,6 +124,7 @@
       });
 
       canvas.addEventListener("touchmove", function (e) {
+        e.preventDefault();
         if (!drawing) return;
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
