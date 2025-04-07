@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#633f1e" />
   <title>TreceHome - Parte de Visita</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" type="image/png" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,6 +17,11 @@
     h1 {
       color: #633f1e;
       text-align: center;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 150px;
     }
     label {
       font-weight: bold;
@@ -54,6 +60,7 @@
   </style>
 </head>
 <body>
+  <img src="icon-512.png" alt="Logo TreceHome" class="logo" />
   <h1>Parte de Visita</h1>
   <form id="visita-form">
     <label>Nombre del cliente</label>
@@ -99,38 +106,58 @@
   </form>
 
   <script>
-    const canvasCliente = document.getElementById("firma-cliente");
-    const canvasAgente = document.getElementById("firma-agente");
-
-    function enableSignature(canvas) {
-      let painting = false;
+    function enableTouchSignature(canvasId) {
+      const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
-      ctx.strokeStyle = "#001f4d";
+      ctx.strokeStyle = "#003366";
       ctx.lineWidth = 2;
+      let drawing = false;
 
-      const startPosition = (e) => {
-        painting = true;
-        draw(e);
-      };
-      const endPosition = () => {
-        painting = false;
+      canvas.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+        drawing = true;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
         ctx.beginPath();
-      };
-      const draw = (e) => {
-        if (!painting) return;
-        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      });
+
+      canvas.addEventListener("touchmove", function (e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(e.offsetX, e.offsetY);
-      };
+        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      });
 
-      canvas.addEventListener("mousedown", startPosition);
-      canvas.addEventListener("mouseup", endPosition);
-      canvas.addEventListener("mousemove", draw);
+      canvas.addEventListener("touchend", function () {
+        drawing = false;
+      });
+
+      canvas.addEventListener("mousedown", function (e) {
+        drawing = true;
+        const rect = canvas.getBoundingClientRect();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      canvas.addEventListener("mousemove", function (e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+
+      canvas.addEventListener("mouseup", () => drawing = false);
+      canvas.addEventListener("mouseout", () => drawing = false);
     }
 
-    enableSignature(canvasCliente);
-    enableSignature(canvasAgente);
+    enableTouchSignature("firma-cliente");
+    enableTouchSignature("firma-agente");
   </script>
 
   <script>
