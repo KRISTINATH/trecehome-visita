@@ -1,77 +1,17 @@
+<!-- HTML COMPLETO ACTUALIZADO -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#633f1e" />
   <title>TreceHome - Parte de Visita</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon-192.png" type="image/png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-    }
-    h1 {
-      color: #633f1e;
-      text-align: center;
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 20px auto;
-      max-width: 150px;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-    canvas {
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      touch-action: none;
-    }
-    .firma-label {
-      color: #001f4d;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .disclaimer {
-      font-size: 0.85em;
-      font-style: italic;
-      margin-top: 20px;
-    }
-    button {
-      background-color: #633f1e;
-      color: white;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
-    #imagenPreview {
-      display: none;
-      margin-top: 20px;
-      max-width: 100%;
-      border: 1px solid #ccc;
-    }
-  </style>
 </head>
 <body>
-  <img src="icon-512.png" alt="Logo TreceHome" class="logo" />
   <h1>Parte de Visita</h1>
   <form id="visita-form">
+    <label>Referencia del Inmueble</label>
+    <input type="text" name="referencia" required />
     <label>Nombre del cliente</label>
     <input type="text" name="cliente" required />
     <label>DNI</label>
@@ -91,151 +31,74 @@
       <option>Diego A</option>
       <option>Sergio JR</option>
     </select>
-    <div class="firma-label">Firma del cliente:</div>
     <canvas id="firma-cliente" width="300" height="100"></canvas>
-    <button type="button" onclick="borrarFirma('firma-cliente')">Borrar Firma Cliente</button>
-    <div class="firma-label">Firma del agente:</div>
     <canvas id="firma-agente" width="300" height="100"></canvas>
-    <button type="button" onclick="borrarFirma('firma-agente')">Borrar Firma Agente</button>
-    <p class="disclaimer">
-      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.
-    </p>
-    <p class="disclaimer">
-      Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.
-    </p>
-    <button type="submit">Generar PDF, Imagen y Correo</button>
+    <button type="submit">Generar PDF y Guardar en Drive</button>
   </form>
 
-  <img id="imagenPreview" alt="Imagen generada" />
-
   <script>
-    function enableTouchSignature(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext("2d");
-      ctx.strokeStyle = "#003366";
-      ctx.lineWidth = 2;
-      let drawing = false;
-      canvas.addEventListener("touchstart", function (e) {
-        e.preventDefault();
-        drawing = true;
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-      });
-      canvas.addEventListener("touchmove", function (e) {
-        e.preventDefault();
-        if (!drawing) return;
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-      });
-      canvas.addEventListener("touchend", function () {
-        drawing = false;
-      });
-      canvas.addEventListener("mousedown", function (e) {
-        drawing = true;
-        const rect = canvas.getBoundingClientRect();
-        ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-      });
-      canvas.addEventListener("mousemove", function (e) {
-        if (!drawing) return;
-        const rect = canvas.getBoundingClientRect();
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-      });
-      canvas.addEventListener("mouseup", () => drawing = false);
-      canvas.addEventListener("mouseout", () => drawing = false);
-    }
-    function borrarFirma(id) {
-      const canvas = document.getElementById(id);
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    enableTouchSignature("firma-cliente");
-    enableTouchSignature("firma-agente");
-  </script>
+    const { jsPDF } = window.jspdf;
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbziA2VFfKWQ8HXktqdWAXChhyAHO-v--_jFO54sUVeMQWTzrZzrwx_NlvgKTzy-FVz8GQ/exec";
 
-  <script>
     document.getElementById("visita-form").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target;
+      const referencia = form.referencia.value;
       const cliente = form.cliente.value;
       const dni = form.dni.value;
-      const email = form.email.value;
       const telefono = form.telefono.value;
+      const email = form.email.value;
       const direccion = form.direccion.value;
       const fecha = form.fecha.value;
       const agente = form.agente.value;
+
       const firmaCliente = document.getElementById("firma-cliente").toDataURL("image/png");
       const firmaAgente = document.getElementById("firma-agente").toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
+
       const doc = new jsPDF({ format: 'a5', unit: 'mm' });
-      const logo = new Image();
-      logo.src = "icon-512.png";
-      logo.onload = function () {
-        doc.setFontSize(16);
-        doc.setTextColor(99, 63, 30);
-        doc.addImage(logo, "PNG", 10, 5, 25, 25);
-        doc.text("TRECE HOME - Parte de Visita", 40, 15);
-        doc.setDrawColor(99, 63, 30);
-        doc.line(10, 28, 140, 28);
-        doc.setFontSize(10);
-        doc.setTextColor(0);
-        doc.text(`Nombre del cliente: ${cliente}`, 10, 35);
-        doc.text(`DNI: ${dni}`, 10, 42);
-        doc.text(`Email: ${email}`, 10, 49);
-        doc.text(`Teléfono: ${telefono}`, 10, 56);
-        doc.text(`Dirección: ${direccion}`, 10, 63);
-        doc.text(`Fecha: ${fecha}`, 10, 70);
-        doc.text(`Agente: ${agente}`, 10, 77);
-        doc.setFontSize(9);
-        doc.setTextColor(33, 33, 33);
-        doc.text("Firmas:", 10, 84);
-        doc.rect(10, 86, 60, 20);
-        doc.rect(75, 86, 60, 20);
-        doc.setFontSize(8);
-        doc.text("Cliente", 10, 108);
-        doc.text("Agente", 75, 108);
-        doc.addImage(firmaCliente, "PNG", 10, 86, 60, 20);
-        doc.addImage(firmaAgente, "PNG", 75, 86, 60, 20);
-        doc.setFontSize(6);
-        doc.setTextColor(100);
-        doc.setFont("times", "italic");
-        doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.", 10, 114, { maxWidth: 135 });
-        doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.", 10, 124, { maxWidth: 135 });
+      doc.setFontSize(12);
+      doc.text(`Parte de Visita - TreceHome`, 10, 10);
+      doc.text(`Referencia: ${referencia}`, 10, 20);
+      doc.text(`Cliente: ${cliente}`, 10, 30);
+      doc.text(`DNI: ${dni}`, 10, 40);
+      doc.text(`Email: ${email}`, 10, 50);
+      doc.text(`Teléfono: ${telefono}`, 10, 60);
+      doc.text(`Dirección: ${direccion}`, 10, 70);
+      doc.text(`Fecha: ${fecha}`, 10, 80);
+      doc.text(`Agente: ${agente}`, 10, 90);
+      doc.addImage(firmaCliente, "PNG", 10, 100, 60, 20);
+      doc.addImage(firmaAgente, "PNG", 75, 100, 60, 20);
+      doc.setFontSize(7);
+      doc.setTextColor(100);
+      doc.setFont("times", "italic");
+      doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD...", 10, 130, { maxWidth: 130 });
+      doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta...", 10, 140, { maxWidth: 130 });
 
-        const filename = `Parte_Visita_${cliente}_${fecha}.pdf`;
-        doc.save(filename);
+      const pdfOutput = doc.output("datauristring");
+      const base64PDF = pdfOutput.split(",")[1];
+      const now = new Date();
+      const fechaStr = now.toISOString().slice(0,10).replace(/-/g, "");
+      const horaStr = `${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
+      const filename = `PV_${referencia}_${fechaStr}-${horaStr}.pdf`;
 
-        html2canvas(document.body).then(canvas => {
-          const imgData = canvas.toDataURL("image/png");
-          const imagen = document.getElementById("imagenPreview");
-          imagen.src = imgData;
-          imagen.style.display = "block";
-        });
+      await fetch(scriptUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          filename,
+          base64PDF,
+          referencia,
+          cliente,
+          dni,
+          telefono,
+          email,
+          direccion,
+          fecha,
+          agente
+        })
+      });
 
-        const asunto = encodeURIComponent("Parte de Visita - Inmueble visitado");
-        const cuerpo = encodeURIComponent(`Estimado/a ${cliente}:
-
-Una vez realizada la visita al inmueble situado en ${direccion}, acompañado/a por nuestra representante de TRECE HOME, ${agente}, le remitimos copia del Parte de Visita correspondiente.
-
-Puede revisar la información incluida y conservar esta hoja como comprobante.
-
-Reciba un cordial saludo,
-
-Equipo TRECE HOME`);
-
-        setTimeout(() => {
-          window.location.href = `mailto:${email}?subject=${asunto}&body=${cuerpo}`;
-        }, 1500);
-      };
+      alert("PDF generado y enviado a Drive correctamente.");
+      form.reset();
     });
   </script>
 </body>
