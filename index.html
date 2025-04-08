@@ -106,7 +106,7 @@
       Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.
     </p>
 
-    <button type="submit">Generar PDF y subir a Drive</button>
+    <button type="submit">Generar PDF y preparar correo</button>
   </form>
 
   <script>
@@ -205,29 +205,23 @@
       doc.text("Mediante la firma de esta hoja de visita...", 10, 120);
       doc.text("Asimismo, reconoce y acepta que TRECE HOME...", 10, 130);
 
-      const pdfBlob = doc.output("blob");
-      const reader = new FileReader();
-      reader.readAsDataURL(pdfBlob);
-      reader.onloadend = async function () {
-        const base64 = reader.result.split(",")[1];
-        const body = {
-          pdf: base64,
-          filename: `Parte_Visita_${cliente}_${fecha}.pdf`
-        };
+      const filename = `Parte_Visita_${cliente}_${fecha}.pdf`;
+      doc.save(filename);
 
-        try {
-          const res = await fetch("https://script.google.com/macros/s/AKfycbziA2VFfKWQ8HXktqdWAXChhyAHO-v--_jFO54sUVeMQWTzrZzrwx_NlvgKTzy-FVz8GQ/exec", {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: { "Content-Type": "application/json" }
-          });
+      const asunto = encodeURIComponent("Parte de Visita - Inmueble visitado");
+      const cuerpo = encodeURIComponent(`Estimado/a ${cliente}:
 
-          const url = await res.text();
-          alert("PDF subido correctamente:\n" + url);
-        } catch (err) {
-          alert("Error al subir el PDF: " + err.message);
-        }
-      };
+Una vez realizada la visita al inmueble situado en ${direccion}, acompañado/a por nuestra representante de TRECE HOME, ${agente}, le remitimos copia del Parte de Visita correspondiente.
+
+Puede revisar la información incluida y conservar esta hoja como comprobante.
+
+Reciba un cordial saludo,
+
+Equipo TRECE HOME`);
+
+      setTimeout(() => {
+        window.location.href = `mailto:${email}?subject=${asunto}&body=${cuerpo}`;
+      }, 1200);
     });
   </script>
 
