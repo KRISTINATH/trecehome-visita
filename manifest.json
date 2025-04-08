@@ -1,10 +1,11 @@
 {
-  "name": "TreceHome Visitas",
-  "short_name": "Visitas",
+  "name": "TreceHome Parte de Visita",
+  "short_name": "TreceHome",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#633f1e",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
