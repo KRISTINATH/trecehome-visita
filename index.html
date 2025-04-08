@@ -3,171 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#633f1e" />
-  <title>TreceHome - Parte de Visita</title>
-  <link rel="icon" href="https://www.trecehome.com/favicon.ico" type="image/x-icon" />
+  <title>Parte de Visita - TreceHome</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 20px;
-    }
-    h1 {
-      color: #633f1e;
-      text-align: center;
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 20px auto;
-      max-width: 150px;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-    canvas {
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      touch-action: none;
-    }
-    .firma-label {
-      color: #001f4d;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .disclaimer {
-      font-size: 0.75em;
-      font-style: italic;
-      margin-top: 20px;
-    }
-    button {
-      background-color: #633f1e;
-      color: white;
-      padding: 10px;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      margin-bottom: 15px;
-    }
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    h1 { color: #633f1e; text-align: center; }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input, select { width: 100%; padding: 8px; margin-bottom: 10px; }
+    canvas { border: 1px solid #ccc; width: 100%; height: 100px; }
+    .firma-label { font-weight: bold; margin-top: 10px; }
+    .disclaimer { font-size: 0.8em; font-style: italic; margin-top: 15px; }
+    button { background: #633f1e; color: white; padding: 10px; border: none; margin-top: 15px; width: 100%; }
   </style>
 </head>
 <body>
-  <img src="https://i.ibb.co/jDtnhv9/logo-trecehome-azul.png" alt="Logo TreceHome" class="logo" />
   <h1>Parte de Visita</h1>
   <form id="visita-form">
     <label>Referencia del inmueble</label>
-    <input type="text" name="referencia" required />
-
+    <input name="referencia" required />
     <label>Nombre del cliente</label>
-    <input type="text" name="cliente" required />
-
+    <input name="cliente" required />
     <label>DNI</label>
-    <input type="text" name="dni" required />
-
+    <input name="dni" required />
     <label>Teléfono</label>
-    <input type="tel" name="telefono" required />
-
+    <input name="telefono" required />
     <label>Email</label>
     <input type="email" name="email" required />
-
     <label>Dirección del inmueble visitado</label>
-    <input type="text" name="direccion" required />
-
+    <input name="direccion" required />
     <label>Fecha</label>
     <input type="date" name="fecha" required />
-
     <label>Agente Inmobiliario</label>
     <select name="agente">
       <option>Kristina K</option>
       <option>Sergio A</option>
       <option>Diego A</option>
-      <option>Sergio JR</option>
     </select>
 
     <div class="firma-label">Firma del cliente:</div>
-    <canvas id="firma-cliente" width="300" height="100"></canvas>
+    <canvas id="firma-cliente"></canvas>
     <button type="button" onclick="borrarFirma('firma-cliente')">Borrar Firma Cliente</button>
 
     <div class="firma-label">Firma del agente:</div>
-    <canvas id="firma-agente" width="300" height="100"></canvas>
+    <canvas id="firma-agente"></canvas>
     <button type="button" onclick="borrarFirma('firma-agente')">Borrar Firma Agente</button>
 
     <p class="disclaimer">
-      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.
+      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos...
     </p>
     <p class="disclaimer">
-      Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.
+      Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble...
     </p>
 
-    <button type="submit">Generar PDF y enviar a Drive</button>
+    <button type="submit">Generar y Enviar Parte</button>
   </form>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbwYLftKpsw0QjawfmKhpGYFMdO-5svx6TtlWzItS23f7dCKxfU9ZEF0SGX9Qudyg2Vj7A/exec";
 
-    function enableSignature(canvasId) {
+    function borrarFirma(id) {
+      const c = document.getElementById(id);
+      const ctx = c.getContext("2d");
+      ctx.clearRect(0, 0, c.width, c.height);
+    }
+
+    function enableDraw(canvasId) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
-      ctx.strokeStyle = "#003366";
-      ctx.lineWidth = 2;
       let drawing = false;
-
-      function startDrawing(e) {
+      canvas.addEventListener("mousedown", e => {
         drawing = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-      }
-
-      function draw(e) {
+        ctx.moveTo(e.offsetX, e.offsetY);
+      });
+      canvas.addEventListener("mousemove", e => {
         if (!drawing) return;
-        const pos = getPos(e);
-        ctx.lineTo(pos.x, pos.y);
+        ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-      }
+      });
+      canvas.addEventListener("mouseup", () => drawing = false);
+      canvas.addEventListener("mouseout", () => drawing = false);
 
-      function stopDrawing() {
-        drawing = false;
-      }
-
-      function getPos(e) {
+      // Mobile
+      canvas.addEventListener("touchstart", e => {
+        drawing = true;
+        const t = e.touches[0];
         const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return {
-          x: clientX - rect.left,
-          y: clientY - rect.top
-        };
+        ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+      });
+      canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        if (!drawing) return;
+        const t = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
+        ctx.stroke();
+      });
+      canvas.addEventListener("touchend", () => drawing = false);
+    }
+
+    enableDraw("firma-cliente");
+    enableDraw("firma-agente");
+
+    document.getElementById("visita-form").addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const jsPDF = window.jspdf.jsPDF;
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const firmaCliente = document.getElementById("firma-cliente").toDataURL("image/png");
+      const firmaAgente = document.getElementById("firma-agente").toDataURL("image/png");
+
+      const now = new Date();
+      const fechaStr = now.toISOString().slice(0,10).replace(/-/g,"");
+      const horaStr = now.getHours().toString().padStart(2,"0")+now.getMinutes().toString().padStart(2,"0");
+      const filename = `PV_${data.referencia}_${fechaStr}-${horaStr}.pdf`;
+
+      const pdf = new jsPDF({ format: "a5", unit: "mm" });
+      pdf.setFontSize(12);
+      pdf.text(`Parte de Visita - TreceHome`, 10, 10);
+      pdf.text(`Cliente: ${data.cliente}`, 10, 20);
+      pdf.text(`DNI: ${data.dni}`, 10, 28);
+      pdf.text(`Teléfono: ${data.telefono}`, 10, 36);
+      pdf.text(`Email: ${data.email}`, 10, 44);
+      pdf.text(`Dirección: ${data.direccion}`, 10, 52);
+      pdf.text(`Fecha: ${data.fecha}`, 10, 60);
+      pdf.text(`Agente: ${data.agente}`, 10, 68);
+      pdf.addImage(firmaCliente, "PNG", 10, 75, 60, 20);
+      pdf.addImage(firmaAgente, "PNG", 80, 75, 60, 20);
+      pdf.setFontSize(6);
+      pdf.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos.", 10, 100, { maxWidth: 130 });
+      pdf.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted o persona vinculada adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta. TRECE HOME podrá reclamar judicialmente el cumplimiento de esta obligación.", 10, 110, { maxWidth: 130 });
+
+      const pdfBase64 = pdf.output("datauristring").split(",")[1];
+
+      try {
+        await fetch(scriptUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            filename,
+            base64PDF: pdfBase64
+          })
+        });
+
+        alert("Parte de visita enviado correctamente.");
+        form.reset();
+      } catch (err) {
+        alert("Error al enviar el PDF");
+        console.error(err);
       }
-
-      canvas.addEventListener("mousedown", startDrawing);
-      canvas.addEventListener("touchstart", startDrawing);
-      canvas.addEventListener("mousemove", draw);
-      canvas.addEventListener("touchmove", draw);
-      canvas.addEventListener("mouseup", stopDrawing);
-      canvas.addEventListener("touchend", stopDrawing);
-      canvas.addEventListener("mouseout", stopDrawing);
-    }
-
-    function borrarFirma(id) {
-      const canvas = document.getElementById(id);
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    enableSignature("firma-cliente");
-    enableSignature("firma-agente");
+    });
   </script>
 </body>
 </html>
