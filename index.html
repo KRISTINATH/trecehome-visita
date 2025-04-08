@@ -7,67 +7,7 @@
   <title>TreceHome - Parte de Visita</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-192.png" type="image/png" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">const scriptUrl = "https://script.google.com/macros/s/AKfycbwYLftKpsw0QjawfmKhpGYFMdO-5svx6TtlWzItS23f7dCKxfU9ZEF0SGX9Qudyg2Vj7A/exec";
-const { jsPDF } = window.jspdf;
-
-  document.getElementById("visita-form").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const referencia = form.referencia.value.trim();
-    const cliente = form.cliente.value.trim();
-    const dni = form.dni.value.trim();
-    const telefono = form.telefono.value.trim();
-    const email = form.email.value.trim();
-    const direccion = form.direccion.value.trim();
-    const fecha = form.fecha.value;
-    const agente = form.agente.value;
-
-    const firmaCliente = document.getElementById("firma-cliente").toDataURL("image/png");
-    const firmaAgente = document.getElementById("firma-agente").toDataURL("image/png");
-
-    const now = new Date();
-    const fechaStr = now.toISOString().slice(0,10).replace(/-/g, "");
-    const horaStr = `${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}`;
-    const filename = `PV_${referencia}_${fechaStr}-${horaStr}.pdf`;
-
-    const doc = new jsPDF({ format: 'a5', unit: 'mm' });
-    doc.setFontSize(12);
-    doc.text(`Parte de Visita - TreceHome`, 10, 10);
-    doc.text(`Cliente: ${cliente}`, 10, 20);
-    doc.text(`DNI: ${dni}`, 10, 28);
-    doc.text(`Email: ${email}`, 10, 36);
-    doc.text(`Teléfono: ${telefono}`, 10, 44);
-    doc.text(`Dirección: ${direccion}`, 10, 52);
-    doc.text(`Fecha: ${fecha}`, 10, 60);
-    doc.text(`Agente: ${agente}`, 10, 68);
-    doc.addImage(firmaCliente, "PNG", 10, 76, 60, 20);
-    doc.addImage(firmaAgente, "PNG", 75, 76, 60, 20);
-    doc.setFontSize(6);
-    doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018...", 10, 100, { maxWidth: 130 });
-    doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta...", 10, 110, { maxWidth: 130 });
-
-    const pdfBase64 = doc.output('datauristring').split(',')[1];
-
-    await fetch(scriptUrl, {
-      method: "POST",
-      body: JSON.stringify({
-        filename,
-        base64PDF: pdfBase64,
-        referencia,
-        cliente,
-        dni,
-        telefono,
-        email,
-        direccion,
-        fecha,
-        agente
-      }),
-    });
-
-    alert("PDF generado y enviado a Google Drive.");
-    form.reset();
-  });
-</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -172,6 +112,8 @@ const { jsPDF } = window.jspdf;
   </form>
 
   <script>
+const scriptUrl = "https://script.google.com/macros/s/AKfycbwYLftKpsw0QjawfmKhpGYFMdO-5svx6TtlWzItS23f7dCKxfU9ZEF0SGX9Qudyg2Vj7A/exec";
+const { jsPDF } = window.jspdf;
     function enableTouchSignature(canvasId) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
