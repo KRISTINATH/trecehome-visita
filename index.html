@@ -176,7 +176,12 @@
     enableTouchSignature("firma-agente");
 
     window.addEventListener("load", () => {
-      const { jsPDF } = window.jspdf;
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("Error al cargar jsPDF. Revisa la conexión o la librería.");
+        return;
+      }
+
+      const jsPDF = window.jspdf.jsPDF;
 
       document.getElementById("visita-form").addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -212,13 +217,13 @@
         doc.addImage(firmaCliente, "PNG", 10, 76, 60, 20);
         doc.addImage(firmaAgente, "PNG", 75, 76, 60, 20);
         doc.setFontSize(6);
-        doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018...", 10, 100, { maxWidth: 130 });
-        doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta...", 10, 110, { maxWidth: 130 });
+        doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.", 10, 100, { maxWidth: 130 });
+        doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.", 10, 110, { maxWidth: 130 });
 
         const pdfBase64 = doc.output("datauristring").split(",")[1];
 
         try {
-          await fetch(scriptUrl, {
+          const response = await fetch(scriptUrl, {
             method: "POST",
             body: JSON.stringify({
               filename,
@@ -233,10 +238,12 @@
               agente
             })
           });
+
+          const result = await response.text();
           alert("PDF generado y enviado correctamente a Google Drive.");
         } catch (err) {
-          alert("Error al enviar el PDF. Revisa la consola.");
           console.error(err);
+          alert("Error al enviar el PDF. Revisa la consola.");
         }
 
         form.reset();
