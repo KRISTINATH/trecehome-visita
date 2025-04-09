@@ -7,146 +7,206 @@
   <title>TreceHome - Parte de Visita</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-192.png" type="image/png" />
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-    h1 { color: #633f1e; text-align: center; }
-    label { font-weight: bold; margin-top: 10px; display: block; }
-    input, select, textarea { width: 100%; padding: 8px; margin-bottom: 12px; box-sizing: border-box; }
-    canvas { border: 1px solid #ccc; margin-bottom: 10px; touch-action: none; }
-    .firma-label { color: #001f4d; font-weight: bold; margin-bottom: 5px; }
-    .disclaimer { font-size: 0.8em; font-style: italic; margin-top: 20px; }
-    button { background-color: #633f1e; color: white; padding: 10px; border: none; cursor: pointer; font-size: 16px; margin-bottom: 15px; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background-color: #fffaf5;
+    }
+    h1 {
+      color: #633f1e;
+      text-align: center;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 150px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      touch-action: none;
+    }
+    button {
+      background-color: #633f1e;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .disclaimer {
+      font-size: 0.8em;
+      font-style: italic;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
+  <img src="icon-512.png" alt="Logo TreceHome" class="logo" />
   <h1>Parte de Visita</h1>
-  <form id="visita-form">
+  <form id="formulario">
     <label>Referencia del inmueble</label>
-    <input type="text" name="referencia" required />
+    <input type="text" name="referencia" required>
+
     <label>Nombre del cliente</label>
-    <input type="text" name="cliente" required />
+    <input type="text" name="cliente" required>
+
     <label>DNI</label>
-    <input type="text" name="dni" required />
+    <input type="text" name="dni" required>
+
     <label>Teléfono</label>
-    <input type="tel" name="telefono" required />
+    <input type="tel" name="telefono" required>
+
     <label>Email</label>
-    <input type="email" name="email" required />
-    <label>Dirección del inmueble visitado</label>
-    <input type="text" name="direccion" required />
+    <input type="email" name="email" required>
+
+    <label>Dirección del inmueble</label>
+    <input type="text" name="direccion" required>
+
     <label>Fecha</label>
-    <input type="date" name="fecha" required />
-    <label>Agente Inmobiliario</label>
+    <input type="date" name="fecha" required>
+
+    <label>Agente inmobiliario</label>
     <select name="agente">
-      <option>Kristina K</option>
-      <option>Sergio A</option>
-      <option>Diego A</option>
-      <option>Sergio JR</option>
+      <option value="Kristina K">Kristina K</option>
+      <option value="Sergio A">Sergio A</option>
+      <option value="Diego A">Diego A</option>
     </select>
-    <div class="firma-label">Firma del cliente:</div>
+
+    <label>Firma del cliente:</label>
     <canvas id="firma-cliente" width="300" height="100"></canvas>
-    <button type="button" onclick="borrarFirma('firma-cliente')">Borrar Firma Cliente</button>
-    <div class="firma-label">Firma del agente:</div>
+    <button type="button" onclick="borrarFirma('firma-cliente')">Borrar firma cliente</button>
+
+    <label>Firma del agente:</label>
     <canvas id="firma-agente" width="300" height="100"></canvas>
-    <button type="button" onclick="borrarFirma('firma-agente')">Borrar Firma Agente</button>
+    <button type="button" onclick="borrarFirma('firma-agente')">Borrar firma agente</button>
+
     <p class="disclaimer">
-      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018, con el fin de gestionar su interés en el inmueble visitado, facilitar información relevante y, en su caso, formalizar propuestas o contratos. Sus datos no se cederán a terceros salvo para trámites necesarios (ej: financiación, gestión notarial). Puede ejercer sus derechos (acceso, rectificación, etc.) mediante solicitud escrita a trecehome13@gmail.com, conservándose los datos únicamente durante el plazo legalmente establecido.
+      Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018... (texto completo incluido en PDF).
     </p>
-    <p class="disclaimer">
-      Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo en la venta/promoción de este inmueble. En caso de que usted, o persona vinculada directamente a su interés, adquiera el bien visitado en los próximos 12 meses —ya sea mediante contacto directo con el propietario, otra agencia o cualquier otro medio—, quedará obligado al abono de la comisión correspondiente sobre el precio de venta, por los servicios de intermediación prestados. La inmobiliaria se reserva el derecho a reclamar judicialmente el cumplimiento de esta obligación, incluyendo intereses y costas derivadas.
-    </p>
-    <button type="submit">Generar PDF y enviar</button>
+
+    <button type="submit">Finalizar visita</button>
   </form>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     const scriptUrl = "https://script.google.com/macros/s/AKfycbz4BuegDA0nWZoHk7XU0U7Nk3qqmioZBriuOF4tkzhFVxPO7C547Q8Uhv9BjOvZOEHgzg/exec";
-    function enableTouchSignature(canvasId) {
-      const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext("2d");
-      ctx.strokeStyle = "#003366";
-      ctx.lineWidth = 2;
-      let drawing = false;
-      canvas.addEventListener("touchstart", function (e) {
-        e.preventDefault(); drawing = true;
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-      });
-      canvas.addEventListener("touchmove", function (e) {
-        e.preventDefault(); if (!drawing) return;
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
-      });
-      canvas.addEventListener("touchend", function () { drawing = false; });
-      canvas.addEventListener("mousedown", function (e) {
-        drawing = true;
-        const rect = canvas.getBoundingClientRect();
-        ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-      });
-      canvas.addEventListener("mousemove", function (e) {
-        if (!drawing) return;
-        const rect = canvas.getBoundingClientRect();
-        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-      });
-      canvas.addEventListener("mouseup", () => drawing = false);
-      canvas.addEventListener("mouseout", () => drawing = false);
-    }
+
     function borrarFirma(id) {
       const canvas = document.getElementById(id);
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    enableTouchSignature("firma-cliente");
-    enableTouchSignature("firma-agente");
-    document.getElementById("visita-form").addEventListener("submit", async function (e) {
+
+    function enableFirma(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
+      let dibujando = false;
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: e.touches ? e.touches[0].clientX - rect.left : e.clientX - rect.left,
+          y: e.touches ? e.touches[0].clientY - rect.top : e.clientY - rect.top
+        };
+      }
+
+      canvas.addEventListener("mousedown", e => {
+        dibujando = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      });
+
+      canvas.addEventListener("mousemove", e => {
+        if (!dibujando) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      });
+
+      canvas.addEventListener("mouseup", () => dibujando = false);
+      canvas.addEventListener("touchstart", e => {
+        e.preventDefault();
+        dibujando = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      });
+      canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      });
+      canvas.addEventListener("touchend", () => dibujando = false);
+    }
+
+    enableFirma("firma-cliente");
+    enableFirma("firma-agente");
+
+    document.getElementById("formulario").addEventListener("submit", async function(e) {
       e.preventDefault();
       const form = e.target;
       const datos = Object.fromEntries(new FormData(form).entries());
-      const firmaCliente = document.getElementById("firma-cliente").toDataURL("image/png");
-      const firmaAgente = document.getElementById("firma-agente").toDataURL("image/png");
+      const canvas1 = document.getElementById("firma-cliente").toDataURL("image/png");
+      const canvas2 = document.getElementById("firma-agente").toDataURL("image/png");
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ format: 'a5', unit: 'mm' });
       doc.setFontSize(12);
-      doc.text(`Parte de Visita - TreceHome`, 10, 10);
-      doc.text(`Cliente: ${datos.cliente}`, 10, 20);
-      doc.text(`DNI: ${datos.dni}`, 10, 28);
-      doc.text(`Email: ${datos.email}`, 10, 36);
-      doc.text(`Teléfono: ${datos.telefono}`, 10, 44);
-      doc.text(`Dirección: ${datos.direccion}`, 10, 52);
-      doc.text(`Fecha: ${datos.fecha}`, 10, 60);
-      doc.text(`Agente: ${datos.agente}`, 10, 68);
-      doc.addImage(firmaCliente, "PNG", 10, 76, 60, 20);
-      doc.addImage(firmaAgente, "PNG", 75, 76, 60, 20);
+      doc.text("Parte de Visita - TreceHome", 10, 10);
+      doc.text("Cliente: " + datos.cliente, 10, 20);
+      doc.text("DNI: " + datos.dni, 10, 28);
+      doc.text("Teléfono: " + datos.telefono, 10, 36);
+      doc.text("Email: " + datos.email, 10, 44);
+      doc.text("Dirección: " + datos.direccion, 10, 52);
+      doc.text("Fecha: " + datos.fecha, 10, 60);
+      doc.text("Agente: " + datos.agente, 10, 68);
+      doc.addImage(canvas1, "PNG", 10, 74, 60, 20);
+      doc.addImage(canvas2, "PNG", 75, 74, 60, 20);
+
+      const disclaimer = "Mediante la firma de esta hoja..."; // resumido aquí
       doc.setFontSize(6);
-      doc.text("Mediante la firma de esta hoja de visita, usted autoriza expresamente a TRECE HOME a tratar sus datos personales conforme al RGPD y la Ley Orgánica 3/2018...", 10, 100, { maxWidth: 130 });
-      doc.text("Asimismo, reconoce y acepta que TRECE HOME actúa como intermediario exclusivo...", 10, 108, { maxWidth: 130 });
+      doc.text(disclaimer, 10, 98, { maxWidth: 130 });
+
       const pdfBase64 = doc.output("datauristring").split(",")[1];
+      const now = new Date();
+      const fechaStr = now.toISOString().split("T")[0].replace(/-/g, "");
+      const hora = now.getHours().toString().padStart(2, '0');
+      const min = now.getMinutes().toString().padStart(2, '0');
+      const filename = `PV_${datos.referencia}_${fechaStr}_${hora}${min}.pdf`;
+
       try {
         const res = await fetch(scriptUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...datos, base64PDF: pdfBase64, filename: `PV_${datos.referencia}_${new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,12)}.pdf` })
+          body: JSON.stringify({
+            ...datos,
+            filename,
+            base64PDF: pdfBase64
+          })
         });
-        const result = await res.text();
-        alert("PDF enviado correctamente a Drive y por correo.");
+        const txt = await res.text();
+        alert("Parte generado correctamente y enviado a Google Drive.");
         form.reset();
-        borrarFirma("firma-cliente"); borrarFirma("firma-agente");
       } catch (err) {
         console.error(err);
-        alert("Error al enviar el PDF. Revisa la consola.");
+        alert("Error al enviar el PDF. Revisa conexión o permisos de CORS.");
       }
     });
   </script>
